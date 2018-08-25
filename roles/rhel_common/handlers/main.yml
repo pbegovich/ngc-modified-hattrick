@@ -1,0 +1,4 @@
+---
+# handlers file for roles/rhel_common
+- name: restart chrony
+  service: name={{ chrony_service_name }} state=restarted

@@ -1,0 +1,50 @@
+---
+- hosts: rhel_kvm
+  name: configure satellite VM content disk
+  remote_user: root
+  become: yes
+  tasks:
+  - name: create content disk for Satellite VM
+    command: "qemu-img create -f raw /var/lib/libvirt/images/satellite-content.img 200G"
+
+  - name: attach content disk for Satellite VM
+    command: "virsh attach-disk satellite --source /var/lib/libvirt/images/satellite-content.img --target vdb --persistent --config --live"
+#- name: configure reverse DNS
+#  hosts: rhel_idm
+#  remote_user: root
+#  - name: add reverse DNS entries to IDM
+#    ipa_dnsrecord:
+#      ipa_host: "{{ rhel_idm.hostname_short }}.{{ domain }}"
+#      ipa_user: admin
+#      ipa_pass: "{{ rhel_idm.admin_pwd }}"
+#      state: present
+#      zone_name: "{{ rhel_idm.reverse_zone }}"
+#      record_name: "{{ item.reverse_record }}"
+#      record_type: 'PTR'
+#      record_value: "{{ item.hostname }}.{{ domain }}"
+
+- hosts: rhel_satellite
+  name: playbook to install satellite server and enable repos
+  vars_files:
+    - 'sat-vars.yml'
+  vars:
+    ansible_ssh_user: root
+    ansible_ssh_pass: redhat
+  remote_user: root
+  become: true
+  tasks:
+  - name: add authorized key from root@kvm
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', 'files/kvm_root_id_rsa.pub') }}"
+
+  - name: add authorized key from machine running this playbook
+    authorized_key:
+      user: root
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+  roles:
+    - rhel_common
+    - rhel_satellite

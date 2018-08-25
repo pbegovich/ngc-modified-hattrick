@@ -1,0 +1,4 @@
+domain: cloudlet1.irad
+ipa_server: "idm.{{ domain }}"
+ipa_user: "{{ vault_idm_admin_user }}"
+ipa_password: "{{ vault_idm_admin_pwd }}"

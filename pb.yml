@@ -1,0 +1,10 @@
+---
+- hosts: 10.22.68.163
+  remote_user: cloud-user
+  become: true
+  vars_files:
+    - 'ocp-vars.yml'
+  tasks:
+    - name: Configure htpasswd for authentication
+      debug:
+        var: shutdown_rhel_kvm

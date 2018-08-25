@@ -1,0 +1,23 @@
+---
+- hosts: 
+    - 10.22.68.163
+    - 10.22.68.166
+  remote_user: cloud-user
+  become: true
+  vars_files:
+    - 'ocp-vars.yml'
+#  roles:
+#    - rhel_common
+#    - ocp-quick
+  tasks:
+    - name: quick task
+      shell: date
+
+    - name: Configure htpasswd for authentication
+      htpasswd:
+        path: '/etc/origin/master/htpasswd'
+        name: "{{ ocpuser }}"
+        password: "{{ ocppass }}"
+
+    - name: set htpasswd user up as a cluster-admin
+      shell: 'oadm policy add-cluster-role-to-user cluster-admin admin'

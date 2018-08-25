@@ -1,0 +1,21 @@
+---
+  - name: extra vars test
+    hosts: localhost
+    become: false
+    vars_prompt:
+      - name: "shutdown_rhel_kvm"
+        prompt: "Shutdown RHEL KVM Host?"
+        default: "false"
+    tasks:
+      - name: debugging
+        vars_prompt:
+          - name: "hmm"
+            prompt: "sure"
+            default: "whatever"
+        debug:
+          var: shutdown_rhel_kvm
+
+      - name: debug shutdown
+        debug:
+          msg: "You want to do what???"
+        when: shutdown_rhel_kvm != false

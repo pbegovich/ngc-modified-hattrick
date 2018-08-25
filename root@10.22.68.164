@@ -1,0 +1,378 @@
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv100"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv100",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv101"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv101",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv102"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv102",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv103"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv103",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv104"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv104",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv105"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv105",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv106"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv106",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv107"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv107",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv108"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv108",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv109"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv109",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv110"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv110",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv111"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv111",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv112"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv112",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv113"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv113",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv114"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv114",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv115"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv115",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv116"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv116",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv117"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv117",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv118"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv118",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv119"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv119",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "PersistentVolume",
+  "metadata": {
+    "name": "pv120"
+  },
+  "spec": {
+    "capacity": {
+        "storage": "10Gi"
+    },
+    "accessModes": [ "ReadWriteMany" ],
+    "nfs": {
+        "path": "/export/pvs/pv120",
+        "server": "10.22.68.7"
+    },
+    "persistentVolumeReclaimPolicy": "Retain"
+  }
+}

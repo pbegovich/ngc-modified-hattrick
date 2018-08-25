@@ -1,0 +1,247 @@
+---
+# tasks file for jritenour.osp-cf-miq
+  - name: Make sure cfme security group exists
+    os_security_group:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      state: present
+      name: "{{ security_group }}"
+      description: security group for CFME servers
+  
+  - name: create SSH rule
+    os_security_group_rule:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 22
+      port_range_max: 22
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: create HTTP rule
+    os_security_group_rule:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 80
+      port_range_max: 80
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: create HTTPS rule
+    os_security_group_rule:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 443
+      port_range_max: 443
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: allow all TCP within CF security group
+    os_security_group_rule:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 1
+      port_range_max: 65535
+      remote_group: "{{ security_group }}"
+
+  - name: allow all UDP within CF security group
+    os_security_group_rule:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      security_group: "{{ security_group }}"
+      protocol: udp
+      port_range_min: 1
+      port_range_max: 65535
+      remote_group: "{{ security_group }}"
+
+  - name: create HTTPS rule
+    os_security_group_rule:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      security_group: "{{ security_group }}"
+      protocol: tcp
+      port_range_min: 443
+      port_range_max: 443
+      remote_ip_prefix: 0.0.0.0/0
+
+  - name: Make sure CF flavor exists
+    os_nova_flavor:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      state: present
+      name: "{{ flavor }}"
+      ram: 12288
+      vcpus: 1
+      disk: 45
+
+  - name: Create CFME volume for instance
+    os_volume:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      state: present
+      availability_zone: "{{ az }}"
+      size: "{{ db_size }}"
+      display_name: cf-{{ type }}-{{ item }}
+    with_sequence:
+      count={{ num }}
+
+  - name: launch instances
+    os_server:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      name: cf-{{ type }}-{{ num }}
+      state: present
+      key_name: "{{ key_name }}"
+      availability_zone: "{{ az }}"
+      nics:
+        - net-name: "{{ network_name }}"
+      image: "{{ image_uid }}"
+      flavor: "{{ flavor_name }}"
+      security_groups: "{{ security_group }}"
+      auto_ip: yes
+      volumes:
+        - cf-{{ type }}-{{ num }}
+    register: osp_host
+    when: db or ui
+
+  - name: Launch workers with second interface on provisioning network
+    os_server:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      name: cf-{{ type }}-{{ item }}
+      state: present
+      key_name: "{{ key_name }}"
+      availability_zone: "{{ az }}"
+      nics:
+        - net-name: "{{ network_name }}"
+#        - net-name: "{{ prov_net }}"
+      image: "{{ image_uid }}"
+      flavor: "{{ flavor_name }}"
+      security_groups: "{{ security_group }}"
+      volumes:
+        - cf-{{ type }}-{{ item }}
+    with_sequence:
+      count={{ num }}
+    register: osp_wk
+    when: wk
+
+  - name: assign floatingip to worker
+    os_floating_ip:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      server: cf-wk-{{ item }}
+      network: "{{ external_network_name }}"
+      nat_destination: "{{ network_name }}" 
+      state: present
+      wait: True
+    register: float
+    with_sequence:
+      count={{ num }}
+    when: wk
+
+  - name: Get worker info (os_floating_ip null value workaround)
+    os_server_facts:
+      verify: no
+      auth:
+        auth_url: "{{ osp_url }}"
+        username: "{{ osp_user }}"
+        password: "{{ osp_pass }}"
+        project_name: "{{ osp_project }}"
+      server: cf-wk*
+    when: wk
+  
+  - debug: 
+      var: openstack_servers
+    when: wk
+   
+  - name: debug
+    debug:
+      var: osp_host
+
+  - name: wait for instance become ready to use
+    wait_for:
+      host: "{{ osp_host.openstack.accessIPv4 }}"
+      port: 22 
+      timeout: "320"
+      state: "started"
+    when: db or ui
+
+  - name: add DB server to inventory
+    add_host:
+      hostname: "{{ osp_host.openstack.accessIPv4 }}"
+      ansible_ssh_user: root
+      ansible_ssh_pass: "{{ cf_ssh_pass }}"
+      groupname: cfdb
+    when: db
+ 
+  - debug:
+      msg: "{{ float }}"
+
+  - name: add Worker to inventory
+    add_host:
+      hostname: "{{ item.addresses.Private[1].addr }}"
+      ansible_ssh_user: root
+      ansible_ssh_pass: "{{ cf_ssh_pass }}"
+      groupname: cfwk
+    with_items: "{{ openstack_servers }}"
+    when: wk
+
+  - name: add UI server to inventory
+    add_host:
+      hostname: "{{ osp_host.openstack.accessIPv4 }}"
+      ansible_ssh__user: root
+      ansible_ssh_pass: "{{ cf_ssh_pass }}"
+      groupname: cfui
+    when: ui

@@ -1,0 +1,25 @@
+---
+- hosts: localhost
+  gather_facts: no
+  remote_user: root
+  vars_files:
+    - ocp-vars.yml
+  vars:
+    type: registry
+  roles:
+    - docker-osp
+  tasks:
+    - name: debug registry vars
+      debug:
+        var: docker_instances
+
+- hosts: registry
+  remote_user: cloud-user
+  become: true
+  vars:
+    type: registry
+  vars_files:
+    - ocp-vars.yml
+  roles:
+    - rhel_common
+    - docker-quick

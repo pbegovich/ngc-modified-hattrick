@@ -1,0 +1,75 @@
+ocp_image_tag: v3.9.27
+domain: cloudlet1.irad
+dns_server_local: 10.22.68.4
+repo_server_ip: 10.22.68.3
+local_repo_url: "http://10.22.68.3/repos/"
+ocp_shared_registry_server: ocp-registry-1.cloudlet1.irad
+ocp_shared_registry_port: 5000
+ocp_disconnected: true
+register_rhn: false
+ocp:
+  repos:
+    - rhel-7-server-rpms
+    - rhel-7-server-extras-rpms
+    - rhel-7-fast-datapath-rpms
+    - rhel-7-server-ose-3.9-rpms
+    - rhel-7-server-ansible-2.4-rpms
+    - rh-gluster-3-client-for-rhel-7-server-rpms
+    - rh-gluster-3-for-rhel-7-server-rpms
+#osp_url: http://10.22.68.40:5000/v2.0 # OpenStack specific
+osp_url: https://10.22.68.40:13000/v2.0 # OpenStack specific
+osp_ip: 10.22.68.40 # OpenStack specific
+osp_user: "{{ vault_osp_user }}" # OpenStack specific
+osp_pass: "{{ vault_osp_pwd }}" # OpenStack specific
+osp_project: operators  # OpenStack specific
+az: nova # works with OpenStack, EC2 & Azure
+db_size: 40 # note that RHV requires the 'GiB' suffix - all other providers just take the integer
+db_vol_name: ocp-{{ type }}-vol
+vm_name: ocp-{{ type }}
+image_uid: rhel75
+master_flavor_name: ocp1.master
+node_flavor_name: ocp1.node
+key_name: kvm #works with OpenStack & EC2
+network_name: Private 
+ssh_user: root
+cf_db_dev: '/dev/vdd'
+wipe_cns_dev: false #override with --extra-vars="wipe_cns_dev=true"
+cns_dev: '/dev/vde'
+cns_size: 20
+openshift_registry_volume_size: 50
+region_num: 20
+security_group: default # works with OpenStack & EC2
+dns: "{{ dns_server_local }}"
+ipa_server: "idm.{{ domain }}"
+#ipa_server: "idm.cloudlet1.irad"
+ipa_user: "{{ vault_idm_admin_user }}"
+ipa_password: "{{ vault_idm_admin_pwd }}"
+ocpuser: "{{ vault_ocp_user }}"
+ocppass: "{{ vault_ocp_pwd }}"
+ocp_master_record: "ocp" #Points an A record at the master node
+ocp_master_domain: "{{ ocp_master_record }}.{{ domain }}"
+ocp_wildcard_record: "*.apps"
+ocp_wildcard_domain: "apps.{{ domain }}"
+private_reverse_zone: "16.172.in-addr.arpa."
+deploy_cluster_extra_vars: "-e openshift_disable_check=disk_availability,memory_availability"
+
+
+ocp_instances:
+  master:
+    num: 1
+    flavor: ocp1.master
+  node:
+    num: 3
+    flavor: ocp1.node
+  infra:
+    num: 1
+    flavor: ocp1.master
+
+docker_instances:
+  registry:
+    vm_name: ocp-registry
+    num: 1
+    flavor: ocp1.registry
+    docker_vol_size: 100
+    docker_vol_name: ocp-registry-vol-registry
+    docker_dev: '/dev/vdb'

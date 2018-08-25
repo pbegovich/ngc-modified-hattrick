@@ -1,0 +1,154 @@
+---
+  - name: enable the needed rhel repositories
+    yum_repository:
+      name: "{{ item }}"
+      description: "{{ item }}"
+      baseurl: "{{ local_repo_url }}{{ item }}"
+      gpgcheck: no
+      enabled: yes
+      file: rhn-local
+      state: present
+    with_items:
+      - "{{ ocp.repos }}"
+    when: not register_rhn
+
+  - name: enable the needed rhel repositories
+    command: subscription-manager repos --enable={{ item }}
+    with_items:
+      - "{{ ocp.repos }}"
+    when: register_rhn
+
+  - name: update packages
+    yum:
+      name: '*'
+      state: latest
+      skip_broken: yes
+    register: yum_result
+    async: 1000
+    poll: 30
+
+  - name: check Kernel is the Latest
+    shell: if [ $(uname -r) == $(rpm -q kernel | tail -n 1 | sed -e 's/kernel-//g') ] ; then echo no ; else echo reboot; fi
+    ignore_errors: true
+    register: reboot_hint
+
+  - name: Install necessary packages
+    yum:
+      name: '{{ item }}'
+      state: present
+    with_items:
+    - wget
+    - git
+    - net-tools
+    - bind-utils
+    - iptables-services
+    - bridge-utils
+    - bash-completion
+    - kexec-tools
+    - sos
+    - psacct
+    - atomic-openshift-utils
+    - docker-1.13.1
+    - ipa-client
+    - httpd-tools
+    - dnsmasq
+    - vim
+
+  - name: restart server to get updated kernel
+    shell: sleep 2 && shutdown -r now "Ansible restart triggered for latest kernel"
+    async: 1
+    poll: 0
+    ignore_errors: true
+    when: yum_result.changed or reboot_hint.stdout.find("reboot") != -1
+
+  - name: waiting for instance to come back online
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      state: started
+      delay: 5
+      connect_timeout: 5
+      timeout: 300
+      port: 22
+    delegate_to: 127.0.0.1
+    become: false
+    ignore_errors: true
+
+  - name: configure IPA client
+    command: ipa-client-install --server="{{ ipa_server }}" --domain="{{ domain }}" --hostname="{{ ansible_hostname }}'.'{{ domain }}" --principal="{{ ipa_user }}" --password="{{ ipa_password }}" --unattended --force-join --enable-dns-updates
+    ignore_errors: true
+
+  - name: configure docker storage
+    template:
+      src: docker-storage-setup.j2
+      dest: /etc/sysconfig/docker-storage-setup
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: run docker storage setup
+    command: docker-storage-setup
+
+  - name: start and enable Docker
+    service:
+      name: docker
+      state: started
+      enabled: true
+
+#  - name: download docker images for master
+#    get_url:
+#      url: http://{{ repo_server_ip }}/repos/ose3-builder-images.tar
+#      dest: /root/ose3-builder-images.tar
+#      mode: 0644
+#    when: "'master' in group_names"
+
+#  - name: load ose builder images on master
+#    command: docker load -i /root/ose3-builder-images.tar
+#    when: "'master' in group_names"
+
+#  - name: download docker images for node
+#    get_url:
+#      url: http://{{ repo_server_ip }}/repos/ose3-images.tar
+#      dest: /root/ose3-images.tar
+#      mode: 0644
+#    when: "'master' not in group_names"
+
+#  - name: load ose images on nodes
+#    command: docker load -i /root/ose3-images.tar
+#    when: "'master' not in group_names"
+
+#  - name: download docker extra images for node
+#    get_url:
+#      url: http://{{ repo_server_ip }}/repos/ose3-extra-images.tar
+#      dest: /root/ose3-extra-images.tar
+#      mode: 0644
+#    when: "'master' not in group_names"
+
+#  - name: load ose extra images on nodes
+#    command: docker load -i /root/ose3-extra-images.tar
+#    when: "'master' not in group_names"
+
+#  - name: download docker logging and metrics images for node
+#    get_url:
+#      url: http://{{ repo_server_ip }}/repos/ose3-logging-metrics-images.tar
+#      dest: /root/ose3-logging-metrics-images.tar
+#      mode: 0644
+#    when: "'master' not in group_names"
+
+#  - name: load ose logging and metrics images on nodes
+#    command: docker load -i /root/ose3-logging-metrics-images.tar
+#    when: "'master' not in group_names"
+
+#  - name: restart dbus
+#    service:
+#      name: dbus
+#      state: restarted
+
+  - name: Set domain in resolve search list
+    lineinfile:
+      path: /etc/resolv.conf
+      regexp: '^search'
+      line: 'search {{ domain }}'
+      owner: root
+      group: root
+      mode: 0644
+

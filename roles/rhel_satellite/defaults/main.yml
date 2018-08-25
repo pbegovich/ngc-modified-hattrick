@@ -1,0 +1,14 @@
+# defaults file for roles/rhel_satellite
+rhel_satellite:
+  hostname_short: satellite
+  repos:
+    - rhel-7-server-rpms
+    - rhel-7-server-extras-rpms
+    - rhel-7-server-rh-common-rpms
+    - rhel-server-rhscl-7-rpms
+    - rhel-7-server-satellite-6.3-rpms
+  packages:
+    - lvm2 
+    - sg3_utils 
+    - firewalld
+    - ipa-client

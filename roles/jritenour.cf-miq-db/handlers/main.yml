@@ -1,0 +1,4 @@
+---
+# handlers file for jritenour.cf-miq-db
+- name: restart chrony
+  service: name={{ chrony_service_name }} state=restarted

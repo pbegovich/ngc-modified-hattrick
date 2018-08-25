@@ -1,0 +1,4 @@
+---
+# vars file for jritenour.cf-miq-ui
+chrony_config_location: /etc/chrony.conf
+chrony_service_name: chronyd
